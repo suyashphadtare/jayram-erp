@@ -43,11 +43,14 @@ erpnext.buying.PurchaseOrderController = erpnext.buying.BuyingController.extend(
 				if(flt(doc.per_billed, 2) < 100 || doc.per_received < 100) {
 					cur_frm.add_custom_button(__('Close'), this.close_purchase_order, __("Status"));
 				}
+
+				
 			}
+
 
 			if(is_drop_ship && doc.status!="Delivered"){
 				cur_frm.add_custom_button(__('Delivered'),
-					this.delivered_by_supplier, __("Status"));
+					 this.delivered_by_supplier, __("Status"));
 
 				cur_frm.page.set_inner_btn_group_as_primary(__("Status"));
 			}
@@ -61,7 +64,7 @@ erpnext.buying.PurchaseOrderController = erpnext.buying.BuyingController.extend(
 			}
 		}
 
-		if(doc.docstatus == 1 && !in_list(["Closed", "Completed"], doc.status)) {
+		if(doc.docstatus == 1 && doc.status != "Closed") {
 			if(flt(doc.per_received, 2) < 100 && allow_receipt) {
 				cur_frm.add_custom_button(__('Receive'), this.make_purchase_receipt, __("Make"));
 
@@ -240,7 +243,7 @@ cur_frm.fields_dict['contact_person'].get_query = function(doc, cdt, cdn) {
 	}
 }
 
-cur_frm.fields_dict['items'].grid.get_field('project').get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['items'].grid.get_field('project_name').get_query = function(doc, cdt, cdn) {
 	return {
 		filters:[
 			['Project', 'status', 'not in', 'Completed, Cancelled']

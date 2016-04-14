@@ -48,8 +48,7 @@
 	            },
 	            "Plant and Machinery": {
 	                "account_type": "Fixed Asset"
-	            },
-				"Accumulated Depreciations": {}
+	            }
 	        },
 	        "Investments": {
 	        	"is_group": 1

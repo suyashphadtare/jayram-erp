@@ -36,7 +36,7 @@ erpnext.stock.DeliveryNoteController = erpnext.selling.SellingController.extend(
 								docstatus: 1,
 								status: ["!=", "Closed"],
 								per_delivered: ["<", 99.99],
-								project: cur_frm.doc.project || undefined,
+								project_name: cur_frm.doc.project_name || undefined,
 								customer: cur_frm.doc.customer || undefined,
 								company: cur_frm.doc.company
 							}
@@ -122,7 +122,7 @@ cur_frm.cscript.new_contact = function(){
 	tn = frappe.model.make_new_doc_and_get_name('Contact');
 	locals['Contact'][tn].is_customer = 1;
 	if(doc.customer) locals['Contact'][tn].customer = doc.customer;
-	frappe.set_route('Form', 'Contact', tn);
+	loaddoc('Contact', tn);
 }
 
 
@@ -142,7 +142,7 @@ cur_frm.cscript.update_status = function(status) {
 }
 
 // ***************** Get project name *****************
-cur_frm.fields_dict['project'].get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['project_name'].get_query = function(doc, cdt, cdn) {
 	return {
 		query: "erpnext.controllers.queries.get_project_name",
 		filters: {

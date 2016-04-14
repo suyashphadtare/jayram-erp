@@ -1,5 +1,4 @@
 supplier
-request-for-quotation
 supplier-quotation
 purchase-order
 setup

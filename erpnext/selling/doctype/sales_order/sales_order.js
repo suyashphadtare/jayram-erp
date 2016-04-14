@@ -117,7 +117,21 @@ erpnext.selling.SalesOrderController = erpnext.selling.SellingController.extend(
 	tc_name: function() {
 		this.get_terms();
 	},
-	
+
+	warehouse: function(doc, cdt, cdn) {
+		var item = frappe.get_doc(cdt, cdn);
+		if(item.item_code && item.warehouse) {
+			return this.frm.call({
+				method: "erpnext.stock.get_item_details.get_available_qty",
+				child: item,
+				args: {
+					item_code: item.item_code,
+					warehouse: item.warehouse,
+				},
+			});
+		}
+	},
+
 	make_material_request: function() {
 		frappe.model.open_mapped_doc({
 			method: "erpnext.selling.doctype.sales_order.sales_order.make_material_request",
@@ -216,10 +230,10 @@ cur_frm.cscript.new_contact = function(){
 	tn = frappe.model.make_new_doc_and_get_name('Contact');
 	locals['Contact'][tn].is_customer = 1;
 	if(doc.customer) locals['Contact'][tn].customer = doc.customer;
-	frappe.set_route('Form', 'Contact', tn);
+	loaddoc('Contact', tn);
 }
 
-cur_frm.fields_dict['project'].get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['project_name'].get_query = function(doc, cdt, cdn) {
 	return {
 		query: "erpnext.controllers.queries.get_project_name",
 		filters: {

@@ -50,13 +50,9 @@ erpnext.buying.MaterialRequestController = erpnext.buying.BuyingController.exten
 						this.make_purchase_order, __("Make"));
 
 				if(doc.material_request_type === "Purchase")
-					cur_frm.add_custom_button(__("Request for Quotation"),
-						this.make_request_for_quotation, __("Make"));
-
-				if(doc.material_request_type === "Purchase")
 					cur_frm.add_custom_button(__("Supplier Quotation"),
 					this.make_supplier_quotation, __("Make"));
-
+				
 				if(doc.material_request_type === "Manufacture" && doc.status === "Submitted")
 					cur_frm.add_custom_button(__("Production Order"),
 					this.raise_production_orders, __("Make"));
@@ -109,9 +105,7 @@ erpnext.buying.MaterialRequestController = erpnext.buying.BuyingController.exten
 			title: __("Get Items from BOM"),
 			fields: [
 				{"fieldname":"bom", "fieldtype":"Link", "label":__("BOM"),
-					options:"BOM", reqd: 1, get_query: function(){
-						return {filters: { docstatus:1 }}
-					}},
+					options:"BOM", reqd: 1},
 				{"fieldname":"warehouse", "fieldtype":"Link", "label":__("Warehouse"),
 					options:"Warehouse", reqd: 1, label:"For Warehouse"},
 				{"fieldname":"fetch_exploded", "fieldtype":"Check",
@@ -127,18 +121,14 @@ erpnext.buying.MaterialRequestController = erpnext.buying.BuyingController.exten
 				method: "erpnext.manufacturing.doctype.bom.bom.get_bom_items",
 				args: values,
 				callback: function(r) {
-					if(!r.message) {
-						frappe.throw(__("BOM does not contain any stock item"))
-					} else {
-						$.each(r.message, function(i, item) {
-							var d = frappe.model.add_child(cur_frm.doc, "Material Request Item", "items");
-							d.item_code = item.item_code;
-							d.description = item.description;
-							d.warehouse = values.warehouse;
-							d.uom = item.stock_uom;
-							d.qty = item.qty;
-						});
-					}
+					$.each(r.message, function(i, item) {
+						var d = frappe.model.add_child(cur_frm.doc, "Material Request Item", "items");
+						d.item_code = item.item_code;
+						d.description = item.description;
+						d.warehouse = values.warehouse;
+						d.uom = item.stock_uom;
+						d.qty = item.qty;
+					});
 					d.hide();
 					refresh_field("items");
 				}
@@ -162,14 +152,6 @@ erpnext.buying.MaterialRequestController = erpnext.buying.BuyingController.exten
 	make_purchase_order: function() {
 		frappe.model.open_mapped_doc({
 			method: "erpnext.stock.doctype.material_request.material_request.make_purchase_order",
-			frm: cur_frm,
-			run_link_triggers: true
-		});
-	},
-
-	make_request_for_quotation: function(){
-		frappe.model.open_mapped_doc({
-			method: "erpnext.stock.doctype.material_request.material_request.make_request_for_quotation",
 			frm: cur_frm,
 			run_link_triggers: true
 		});

@@ -118,7 +118,7 @@ class DeliveryNote(SellingController):
 				super(DeliveryNote, self).validate_with_previous_doc({
 					fn[0]: {
 						"ref_dn_field": fn[1],
-						"compare_fields": [["customer", "="], ["company", "="], ["project", "="],
+						"compare_fields": [["customer", "="], ["company", "="], ["project_name", "="],
 							["currency", "="]],
 					},
 				})
@@ -129,12 +129,12 @@ class DeliveryNote(SellingController):
 
 	def validate_proj_cust(self):
 		"""check for does customer belong to same project as entered.."""
-		if self.project and self.customer:
+		if self.project_name and self.customer:
 			res = frappe.db.sql("""select name from `tabProject`
 				where name = %s and (customer = %s or
-					ifnull(customer,'')='')""", (self.project, self.customer))
+					ifnull(customer,'')='')""", (self.project_name, self.customer))
 			if not res:
-				frappe.throw(_("Customer {0} does not belong to project {1}").format(self.customer, self.project))
+				frappe.throw(_("Customer {0} does not belong to project {1}").format(self.customer, self.project_name))
 
 	def validate_for_items(self):
 		check_list, chk_dupl_itm = [], []

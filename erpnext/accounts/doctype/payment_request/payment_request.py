@@ -211,10 +211,7 @@ def get_amount(ref_doc, dt):
 		grand_total = flt(ref_doc.grand_total) - flt(ref_doc.advance_paid)
 		
 	if dt == "Sales Invoice":
-		if ref_doc.party_account_currency == ref_doc.currency:
-			grand_total = flt(ref_doc.outstanding_amount)
-		else:
-			grand_total = flt(ref_doc.outstanding_amount) / ref_doc.conversion_rate
+		grand_total = flt(ref_doc.outstanding_amount)
 		
 	if grand_total > 0 :
 		return grand_total

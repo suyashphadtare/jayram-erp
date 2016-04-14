@@ -39,7 +39,7 @@ erpnext.hr.ExpenseClaimController = frappe.ui.form.Controller.extend({
 					d1.account_type = r.message.account_type;
 				}
 
-				frappe.set_route('Form', 'Journal Entry', jv.name);
+				loaddoc('Journal Entry', jv.name);
 			}
 		});
 	}

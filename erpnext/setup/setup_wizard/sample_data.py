@@ -15,7 +15,6 @@ def make_sample_data():
 	selling_items = frappe.get_all("Item", filters = {"is_sales_item": 1})
 	buying_items = frappe.get_all("Item", filters = {"is_purchase_item": 1})
 	customers = frappe.get_all("Customer")
-	warehouses = frappe.get_all("Warehouse")
 
 	if selling_items and customers:
 		for i in range(3):
@@ -25,7 +24,7 @@ def make_sample_data():
 
 	make_projects()
 
-	if buying_items and warehouses:
+	if buying_items:
 		make_material_request(buying_items)
 
 	frappe.db.commit()

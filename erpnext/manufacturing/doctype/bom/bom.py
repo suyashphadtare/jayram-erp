@@ -15,23 +15,14 @@ form_grid_templates = {
 
 class BOM(Document):
 	def autoname(self):
-		names = frappe.db.sql("""select name from `tabBOM`
-			where item=%s""", self.item)
-
-		if names:
-			# name can be BOM/ITEM/001, BOM/ITEM/001-1, BOM-ITEM-001, BOM-ITEM-001-1
-
-			# split by item
-			names = [name[0].split(self.item)[-1][1:] for name in names]
-
-			# split by (-) if cancelled
-			names = [cint(name.split('-')[-1]) for name in names]
-
-			idx = max(names) + 1
+		last_name = frappe.db.sql("""select max(name) from `tabBOM`
+			where name like "BOM/{0}/%%" and item=%s
+		""".format(frappe.db.escape(self.item, percent=False)), self.item)
+		if last_name:
+			idx = cint(cstr(last_name[0][0]).split('/')[-1].split('-')[0]) + 1
 		else:
 			idx = 1
-
-		self.name = 'BOM-' + self.item + ('-%.3i' % idx)
+		self.name = 'BOM/' + self.item + ('/%.3i' % idx)
 
 	def validate(self):
 		self.clear_operations()
@@ -65,7 +56,7 @@ class BOM(Document):
 		self.manage_default_bom()
 
 	def get_item_det(self, item_code):
-		item = frappe.db.sql("""select name, item_name, is_fixed_asset, is_purchase_item,
+		item = frappe.db.sql("""select name, item_name, is_asset_item, is_purchase_item,
 			docstatus, description, image, is_sub_contracted_item, stock_uom, default_bom,
 			last_purchase_rate
 			from `tabItem` where name=%s""", item_code, as_dict = 1)

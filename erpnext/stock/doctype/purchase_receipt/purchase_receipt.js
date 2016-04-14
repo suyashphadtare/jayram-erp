@@ -181,10 +181,10 @@ cur_frm.cscript.new_contact = function() {
 	locals['Contact'][tn].is_supplier = 1;
 	if(doc.supplier)
 		locals['Contact'][tn].supplier = doc.supplier;
-	frappe.set_route('Form', 'Contact', tn);
+	loaddoc('Contact', tn);
 }
 
-cur_frm.fields_dict['items'].grid.get_field('project').get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['items'].grid.get_field('project_name').get_query = function(doc, cdt, cdn) {
 	return {
 		filters: [
 			['Project', 'status', 'not in', 'Completed, Cancelled']

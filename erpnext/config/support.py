@@ -4,7 +4,8 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"label": _("Issues"),
+			"label": _("Documents"),
+			"icon": "icon-star",
 			"items": [
 				{
 					"type": "doctype",
@@ -13,14 +14,9 @@ def get_data():
 				},
 				{
 					"type": "doctype",
-					"name": "Communication",
-					"description": _("Communication log."),
+					"name": "Warranty Claim",
+					"description": _("Warranty Claim against Serial No."),
 				},
-			]
-		},
-		{
-			"label": _("Maintenance"),
-			"items": [
 				{
 					"type": "doctype",
 					"name": "Maintenance Schedule",
@@ -32,20 +28,14 @@ def get_data():
 					"description": _("Visit report for maintenance call."),
 				},
 				{
-					"type": "report",
-					"name": "Maintenance Schedules",
-					"is_query_report": True,
-					"doctype": "Maintenance Schedule"
+					"type": "doctype",
+					"name": "Newsletter",
+					"description": _("Newsletters to contacts, leads."),
 				},
-			]
-		},
-		{
-			"label": _("Warranty"),
-			"items": [
 				{
 					"type": "doctype",
-					"name": "Warranty Claim",
-					"description": _("Warranty Claim against Serial No."),
+					"name": "Communication",
+					"description": _("Communication log."),
 				},
 				{
 					"type": "doctype",
@@ -55,7 +45,18 @@ def get_data():
 			]
 		},
 		{
-			"label": _("Reports"),
+			"label": _("Setup"),
+			"icon": "icon-cog",
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Email Account",
+					"description": _("Setup incoming server for support email id. (e.g. support@example.com)")
+				},
+			]
+		},
+		{
+			"label": _("Standard Reports"),
 			"icon": "icon-list",
 			"items": [
 				{
@@ -63,6 +64,12 @@ def get_data():
 					"name": "support-analytics",
 					"label": _("Support Analytics"),
 					"icon": "icon-bar-chart"
+				},
+				{
+					"type": "report",
+					"name": "Maintenance Schedules",
+					"is_query_report": True,
+					"doctype": "Maintenance Schedule"
 				},
 			]
 		},

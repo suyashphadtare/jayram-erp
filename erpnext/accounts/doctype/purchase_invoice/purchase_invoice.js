@@ -118,7 +118,7 @@ erpnext.accounts.PurchaseInvoice = erpnext.buying.BuyingController.extend({
 	items_add: function(doc, cdt, cdn) {
 		var row = frappe.get_doc(cdt, cdn);
 		this.frm.script_manager.copy_from_first_row("items", row,
-			["expense_account", "cost_center", "project"]);
+			["expense_account", "cost_center", "project_name"]);
 	},
 
 	on_submit: function() {
@@ -196,7 +196,7 @@ cur_frm.fields_dict['credit_to'].get_query = function(doc) {
 
 // Get Print Heading
 cur_frm.fields_dict['select_print_heading'].get_query = function(doc, cdt, cdn) {
-	return {
+return{
 		filters:[
 			['Print Heading', 'docstatus', '!=', 2]
 		]
@@ -204,21 +204,9 @@ cur_frm.fields_dict['select_print_heading'].get_query = function(doc, cdt, cdn) 
 }
 
 cur_frm.set_query("expense_account", "items", function(doc) {
-	return {
-		query: "erpnext.controllers.queries.get_expense_account",
+	return{
+		query: "erpnext.accounts.doctype.purchase_invoice.purchase_invoice.get_expense_account",
 		filters: {'company': doc.company}
-	}
-});
-
-cur_frm.set_query("asset", "items", function(doc, cdt, cdn) {
-	var d = locals[cdt][cdn];
-	return {
-		filters: {
-			'item_code': d.item_code,
-			'docstatus': 1,
-			'company': doc.company,
-			'status': 'Submitted'
-		}
 	}
 });
 
@@ -254,7 +242,7 @@ cur_frm.cscript.cost_center = function(doc, cdt, cdn){
 	refresh_field('items');
 }
 
-cur_frm.fields_dict['items'].grid.get_field('project').get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['items'].grid.get_field('project_name').get_query = function(doc, cdt, cdn) {
 	return{
 		filters:[
 			['Project', 'status', 'not in', 'Completed, Cancelled']

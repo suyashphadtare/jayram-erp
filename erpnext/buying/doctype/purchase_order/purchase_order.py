@@ -58,7 +58,7 @@ class PurchaseOrder(BuyingController):
 			},
 			"Supplier Quotation Item": {
 				"ref_dn_field": "supplier_quotation_item",
-				"compare_fields": [["rate", "="], ["project", "="], ["item_code", "="]],
+				"compare_fields": [["rate", "="], ["project_name", "="], ["item_code", "="]],
 				"is_child_table": True
 			}
 		})
@@ -103,7 +103,10 @@ class PurchaseOrder(BuyingController):
 					d.price_list_rate = d.base_price_list_rate / conversion_rate
 					d.rate = d.base_rate / conversion_rate
 				else:
-					msgprint(_("Last purchase rate not found"))
+					# if no last purchase found, reset all values to 0
+					for field in ("base_price_list_rate", "base_rate",
+						"price_list_rate", "rate", "discount_percentage"):
+							d.set(field, 0)
 
 					item_last_purchase_rate = frappe.db.get_value("Item", d.item_code, "last_purchase_rate")
 					if item_last_purchase_rate:
@@ -167,6 +170,8 @@ class PurchaseOrder(BuyingController):
 	def on_submit(self):
 		if self.is_against_so():
 			self.update_status_updater()
+
+		super(PurchaseOrder, self).on_submit()
 
 		purchase_controller = frappe.get_doc("Purchase Common")
 

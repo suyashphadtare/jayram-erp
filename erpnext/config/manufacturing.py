@@ -4,9 +4,15 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"label": _("Production"),
+			"label": _("Documents"),
 			"icon": "icon-star",
 			"items": [
+				{
+					"type": "doctype",
+					"name": "BOM",
+					"description": _("Bill of Materials (BOM)"),
+					"label": _("Bill of Material")
+				},
 				{
 					"type": "doctype",
 					"name": "Production Order",
@@ -14,37 +20,8 @@ def get_data():
 				},
 				{
 					"type": "doctype",
-					"name": "Production Planning Tool",
-					"description": _("Generate Material Requests (MRP) and Production Orders."),
-				},
-				{
-					"type": "doctype",
-					"name": "Stock Entry",
-				},
-				{
-					"type": "doctype",
 					"name": "Time Log",
 					"description": _("Time Logs for manufacturing."),
-				},
-
-			]
-		},
-		{
-			"label": _("Bill of Materials"),
-			"items": [
-				{
-					"type": "doctype",
-					"name": "BOM",
-					"description": _("Bill of Materials (BOM)"),
-					"label": _("Bill of Materials")
-				},
-				{
-					"type": "page",
-					"name": "bom-browser",
-					"icon": "icon-sitemap",
-					"label": _("BOM Browser"),
-					"description": _("Tree of Bill of Materials"),
-					"doctype": "BOM"
 				},
 				{
 					"type": "doctype",
@@ -70,9 +47,22 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Production Planning Tool",
+					"description": _("Generate Material Requests (MRP) and Production Orders."),
+				},
+				{
+					"type": "doctype",
 					"name": "BOM Replace Tool",
 					"description": _("Replace Item / BOM in all BOMs"),
 				},
+				{
+					"type": "page",
+					"name": "bom-browser",
+					"icon": "icon-sitemap",
+					"label": _("BOM Browser"),
+					"description": _("Tree of Bill of Materials"),
+					"doctype": "BOM"
+				}
 			]
 		},
 		{
@@ -86,7 +76,7 @@ def get_data():
 			]
 		},
 		{
-			"label": _("Reports"),
+			"label": _("Standard Reports"),
 			"icon": "icon-list",
 			"items": [
 				{

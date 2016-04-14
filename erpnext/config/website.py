@@ -3,7 +3,8 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"label": _("Portal"),
+			"label": _("Shopping Cart"),
+			"icon": "icon-wrench",
 			"items": [
 				{
 					"type": "doctype",

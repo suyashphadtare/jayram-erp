@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 import frappe
-from frappe.utils import cstr, has_gravatar
+from frappe.utils import cstr
 from frappe import _
 
 from erpnext.controllers.status_updater import StatusUpdater
@@ -24,8 +24,6 @@ class Contact(StatusUpdater):
 		self.set_status()
 		self.validate_primary_contact()
 		self.set_user()
-		if self.email_id:
-			self.image = has_gravatar(self.email_id)
 
 	def set_user(self):
 		if not self.user and self.email_id:
@@ -94,13 +92,3 @@ def get_contact_details(contact):
 		"contact_department": contact.get("department")
 	}
 	return out
-
-def update_contact(doc, method):
-	'''Update contact when user is updated, if contact is found. Called via hooks'''
-	contact_name = frappe.db.get_value("Contact", {"email_id": doc.name})
-	if contact_name:
-		contact = frappe.get_doc("Contact", contact_name)
-		for key in ("first_name", "last_name", "phone"):
-			if doc.get(key):
-				contact.set(key, doc.get(key))
-		contact.save(ignore_permissions=True)

@@ -27,8 +27,7 @@ class Item(WebsiteGenerator):
 
 	def onload(self):
 		super(Item, self).onload()
-		self.set_onload('sle_exists', self.check_if_sle_exists())
-		self.set_onload('links', self.meta.get_links_setup())
+		self.get("__onload").sle_exists = self.check_if_sle_exists()
 
 	def autoname(self):
 		if frappe.db.get_default("item_naming_by")=="Naming Series":
@@ -53,14 +52,11 @@ class Item(WebsiteGenerator):
 		if self.is_sales_item=="Yes":
 			self.publish_in_hub = 1
 
-		if not self.description:
-			self.description = self.item_name
-
 	def validate(self):
 		super(Item, self).validate()
 
-		if not self.description:
-			self.description = self.item_name
+		if not self.stock_uom:
+			msgprint(_("Please enter default Unit of Measure"), raise_exception=1)
 
 		self.validate_uom()
 		self.add_default_uom_in_conversion_factor_table()
@@ -81,12 +77,10 @@ class Item(WebsiteGenerator):
 		self.validate_variant_attributes()
 		self.validate_website_image()
 		self.make_thumbnail()
-		self.validate_fixed_asset_item()
 
 		if not self.get("__islocal"):
 			self.old_item_group = frappe.db.get_value(self.doctype, self.name, "item_group")
-			self.old_website_item_groups = frappe.db.sql_list("""select item_group
-				from `tabWebsite Item Group`
+			self.old_website_item_groups = frappe.db.sql_list("""select item_group from `tabWebsite Item Group`
 				where parentfield='website_item_groups' and parenttype='Item' and parent=%s""", self.name)
 
 	def on_update(self):
@@ -400,22 +394,13 @@ class Item(WebsiteGenerator):
 			vals = frappe.db.get_value("Item", self.name,
 				["has_serial_no", "is_stock_item", "valuation_method", "has_batch_no"], as_dict=True)
 
-			if vals and ((self.is_stock_item != vals.is_stock_item) or
+			if vals and ((self.is_stock_item == 0 and vals.is_stock_item == 1) or
 				vals.has_serial_no != self.has_serial_no or
 				vals.has_batch_no != self.has_batch_no or
 				cstr(vals.valuation_method) != cstr(self.valuation_method)):
-					if self.check_if_linked_document_exists():
-						frappe.throw(_("As there are existing transactions for this item, \
+					if self.check_if_sle_exists() == "exists":
+						frappe.throw(_("As there are existing stock transactions for this item, \
 							you can not change the values of 'Has Serial No', 'Has Batch No', 'Is Stock Item' and 'Valuation Method'"))
-							
-	def check_if_linked_document_exists(self):
-		for doctype in ("Sales Order Item", "Delivery Note Item", "Sales Invoice Item", 
-			"Material Request Item", "Purchase Order Item", "Purchase Receipt Item", 
-			"Purchase Invoice Item", "Stock Entry Detail", "Stock Reconciliation Item"):
-			if frappe.db.get_value(doctype, filters={"item_code": self.name, "docstatus": 1}) or \
-				frappe.db.get_value("Production Order", 
-					filters={"production_item": self.name, "docstatus": 1}):
-				return True
 
 	def validate_reorder_level(self):
 		if len(self.get("reorder_levels", {"material_request_type": "Purchase"})):
@@ -578,10 +563,6 @@ class Item(WebsiteGenerator):
 			if variant:
 				frappe.throw(_("Item variant {0} exists with same attributes")
 					.format(variant), ItemVariantExistsError)
-
-	def validate_fixed_asset_item(self):
-		if self.is_fixed_asset and self.is_stock_item:
-			frappe.throw(_("Fixed Asset Item must be a non-stock item"))
 
 def validate_end_of_life(item_code, end_of_life=None, disabled=None, verbose=1):
 	if (not end_of_life) or (disabled is None):

@@ -5,7 +5,6 @@ frappe.provide("erpnext.item");
 
 frappe.ui.form.on("Item", {
 	onload: function(frm) {
-		frm.hide_first = true;
 		erpnext.item.setup_queries(frm);
 		if (frm.doc.variant_of){
 			frm.fields_dict["attributes"].grid.set_column_disp("attribute_value", true);
@@ -17,7 +16,6 @@ frappe.ui.form.on("Item", {
 	},
 
 	refresh: function(frm) {
-
 		if(frm.doc.is_stock_item) {
 			frm.add_custom_button(__("Balance"), function() {
 				frappe.route_options = {
@@ -75,8 +73,6 @@ frappe.ui.form.on("Item", {
 		}
 
 		erpnext.item.toggle_attributes(frm);
-
-		frm.dashboard.show_links();
 	},
 
 	validate: function(frm){
@@ -115,27 +111,40 @@ frappe.ui.form.on("Item", {
 
 $.extend(erpnext.item, {
 	setup_queries: function(frm) {
+		// Expense Account
+		// ---------------------------------
 		frm.fields_dict['expense_account'].get_query = function(doc) {
 			return {
-				query: "erpnext.controllers.queries.get_expense_account",
+				filters: {
+					"report_type": "Profit and Loss",
+					"is_group": 0
+				}
 			}
 		}
 
+		// Income Account
+		// --------------------------------
 		frm.fields_dict['income_account'].get_query = function(doc) {
 			return {
 				query: "erpnext.controllers.queries.get_income_account"
 			}
 		}
 
+
+		// Purchase Cost Center
+		// -----------------------------
 		frm.fields_dict['buying_cost_center'].get_query = function(doc) {
 			return {
-				filters: { "is_group": 0 }
+				filters:{ "is_group": 0 }
 			}
 		}
 
+
+		// Sales Cost Center
+		// -----------------------------
 		frm.fields_dict['selling_cost_center'].get_query = function(doc) {
 			return {
-				filters: { "is_group": 0 }
+				filters:{ "is_group": 0 }
 			}
 		}
 
@@ -150,7 +159,7 @@ $.extend(erpnext.item, {
 			}
 		}
 
-		frm.fields_dict['item_group'].get_query = function(doc, cdt, cdn) {
+		frm.fields_dict['item_group'].get_query = function(doc,cdt,cdn) {
 			return {
 				filters: [
 					['Item Group', 'docstatus', '!=', 2]

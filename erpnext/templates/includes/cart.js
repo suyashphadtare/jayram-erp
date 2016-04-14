@@ -147,8 +147,3 @@ $(document).ready(function() {
 	$(".cart-icon").hide();
 	shopping_cart.bind_events();
 });
-
-function show_terms() {
-  var html = $(".cart-terms").html();
-    frappe.msgprint(html);
-}
