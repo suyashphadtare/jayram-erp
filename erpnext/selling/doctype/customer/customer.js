@@ -135,4 +135,4 @@ cur_frm.fields_dict['accounts'].grid.get_field('account').get_query = function(d
 
 
 {% include "discount_feature/custom_methods.js" %};
-$.extend(cur_frm.cscript, new CustomerToDOCommuincation({frm: cur_frm}));
+$.extend(cur_frm.cscript, new CustomerToDOCommunication({frm: cur_frm}));

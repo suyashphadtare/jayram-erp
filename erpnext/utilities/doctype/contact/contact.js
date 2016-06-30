@@ -31,4 +31,4 @@ frappe.ui.form.on("Contact", {
 });
 
 {% include "discount_feature/custom_methods.js" %};
-$.extend(cur_frm.cscript, new ContactCommuincationToDO({frm: cur_frm}));
+$.extend(cur_frm.cscript, new ContactCommunicationToDO({frm: cur_frm}));
